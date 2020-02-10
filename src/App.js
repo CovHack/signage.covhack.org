@@ -82,7 +82,7 @@ const SliderHolder = (props) => {
     props.api.destroy()
     document.body.style['overflow'] = 'hidden'
     props.api.moveSectionDown()
-  }, 1000*5);
+  }, process.env.REACT_APP_SLIDE_TIME);
   return <div>{props.slides}</div>
 }
 
