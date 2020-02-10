@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Countdown, { zeroPad } from "react-countdown";
-import ReactFullpage from '@fullpage/react-fullpage';
+import React, { useState, useEffect, useRef } from 'react'
+import Countdown, { zeroPad } from "react-countdown"
+import ReactFullpage from '@fullpage/react-fullpage'
 import { useWindowSize } from 'react-use'
 import Confetti from 'react-confetti'
 import firebase from './firebase'
@@ -8,7 +8,7 @@ import { createStore, combineReducers } from 'redux'
 import { Provider, useSelector } from 'react-redux'
 import { useFirestoreConnect, ReactReduxFirebaseProvider, firebaseReducer } from 'react-redux-firebase'
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore'
-
+import useForceUpdate from 'use-force-update';
 
 import './App.css';
 
@@ -32,7 +32,7 @@ const rrfProps = {
 
 const Completionist = () => <span>Hacking has finished!</span>;
 
-const renderer = (windowSize, message, { hours, minutes, seconds, completed }) => {
+const renderer = (windowSize, { hours, minutes, seconds, completed }) => {
   if (completed) {
     return (<div>
       <Confetti
@@ -47,7 +47,6 @@ const renderer = (windowSize, message, { hours, minutes, seconds, completed }) =
     // Render a countdown
     return (
       <span>
-        {message && <div>{message}<br /></div>}
         {zeroPad(hours, 2)}:{zeroPad(minutes, 2)}:{zeroPad(seconds, 2)}
       </span>
     );
@@ -146,30 +145,56 @@ const Slides = (props) => {
 }
 
 const CountdownHeader = () => {
+  const forceUpdate = useForceUpdate();
   useFirestoreConnect('config')
   const windowSize = useWindowSize()
   const config = useSelector(state => state.firestore.data.config)
   /* Default, just really far in the future. */
   let date = new Date('2999-12-31 12:00:00')
   let message = ''
+  let type = 0
   if (config && config.main && config.main.start_date && config.main.end_date) {
     /* check if hacking ends or starts sooner */
     const start_date = new Date(config.main.start_date)
     const end_date = new Date(config.main.end_date)
-    if (end_date > Date.now() > start_date) {
+    const curr = Date.now()
+    if (end_date > curr && curr >= start_date) {
+      type = 2
       date = end_date
-    } else {
+    } if (start_date >= curr && end_date >= curr) {
+      type = 1
       date = start_date
       message = 'Hacking starts in...'
+    } else {
+      type = 2
+      date = end_date
     }
-
   }
 
-  const countdownRenderer = (a) => renderer(windowSize, message, a)
+  const countdownRenderer = (a) => renderer(windowSize, a)
   return (
     <ul id="menu">
       <li>
-        <Countdown date={date} renderer={countdownRenderer} />
+        {type === 0 &&
+          <span>Loading....</span>
+        }
+        {type === 1 &&
+          <div>
+            <span>Hacking Starts in: </span><br />
+            <Countdown
+              date={date}
+              renderer={countdownRenderer}
+              onComplete={() => forceUpdate()}
+            />
+          </div>
+        }
+        {type === 2 && 
+          <Countdown
+            date={date}
+            renderer={countdownRenderer}
+            onComplete={() => forceUpdate()}
+          />
+        }
       </li>
     </ul>
   )
