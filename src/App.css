@@ -1,38 +1,74 @@
-.App {
-  text-align: center;
+@import url('https://indestructibletype.com/fonts/Jost.css');
+
+/* Custom CSS
+ * --------------------------------------- */
+body{
+	font-family: Jost,Roboto,Arial,sans-serif;
+	color: #ffffff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.wrap{
+	margin-left: auto;
+	margin-right: auto;
+	width: 960px;
+	position: relative;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h1{
+	font-size: 8em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+p{
+	font-size: 4em;
 }
 
-.App-link {
-  color: #61dafb;
+
+.intro p{
+	width: 50%;
+	margin: 0 auto;
+	font-size: 1.5em;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.section{
+	text-align: center;
+    overflow: hidden;
 }
+
+#menu li {
+	display:inline-block;
+	margin: 0.0em;
+	color: #000;
+	font-size: 6em;
+}
+
+#menu {
+	text-align:center;
+	position:fixed;
+	top: 0;
+	left: 0;
+	z-index: 100;
+	width: 100%;
+    background-color: #ffffff7f;
+	padding: 0;
+	margin:0;
+}
+
+#notifications li {
+	margin: 0.0em;
+	color: #000;
+	font-size: 4em;
+    border: 0.05em solid #00aeef;
+}
+
+#notifications {
+	text-align:center;
+	position:fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 50;
+	width: 100%;
+    background-color: #ffffff7f;
+	padding: 0;
+	margin:0;
+}
+
